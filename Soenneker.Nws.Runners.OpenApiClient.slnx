@@ -4,6 +4,7 @@
   </Folder>
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/build-and-test.yml" />
+    <File Path=".github/workflows/codeql.yml" />
     <File Path=".github/workflows/daily-automatic-update.yml" />
   </Folder>
   <Project Path="src/Soenneker.Nws.Runners.OpenApiClient/Soenneker.Nws.Runners.OpenApiClient.csproj" />
