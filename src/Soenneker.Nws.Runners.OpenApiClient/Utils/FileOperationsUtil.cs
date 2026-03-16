@@ -54,13 +54,11 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
 
         await _processUtil.Start("dotnet", null, "tool update --global Microsoft.OpenApi.Kiota", waitForExit: true, cancellationToken: cancellationToken);
 
-        string fixedFilePath = Path.Combine(gitDirectory, "fixed.json");
-
         string srcDirectory = Path.Combine(gitDirectory, "src");
 
         await DeleteAllExceptCsproj(srcDirectory, cancellationToken);
 
-        await _processUtil.Start("kiota", gitDirectory, $"kiota generate -l CSharp -d \"{fixedFilePath}\" -o src -c NwsOpenApiClient -n {Constants.Library}",
+        await _processUtil.Start("kiota", gitDirectory, $"kiota generate -l CSharp -d \"{targetFilePath}\" -o src -c NwsOpenApiClient -n {Constants.Library}",
                               waitForExit: true, cancellationToken: cancellationToken)
                           .NoSync();
 
