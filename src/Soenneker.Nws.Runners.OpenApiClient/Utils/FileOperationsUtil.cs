@@ -58,7 +58,7 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
 
         await DeleteAllExceptCsproj(srcDirectory, cancellationToken);
 
-        await _processUtil.Start("kiota", gitDirectory, $"kiota generate -l CSharp -d \"{targetFilePath}\" -o src -c NwsOpenApiClient -n {Constants.Library}",
+        await _processUtil.Start("kiota", gitDirectory, $"kiota generate -l CSharp -d \"{targetFilePath}\" -o src/{Constants.Library} -c NwsOpenApiClient -n {Constants.Library}",
                               waitForExit: true, cancellationToken: cancellationToken)
                           .NoSync();
 
