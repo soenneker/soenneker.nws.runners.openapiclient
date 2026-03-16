@@ -54,7 +54,7 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
 
         await _processUtil.Start("dotnet", null, "tool update --global Microsoft.OpenApi.Kiota", waitForExit: true, cancellationToken: cancellationToken);
 
-        string srcDirectory = Path.Combine(gitDirectory, "src");
+        string srcDirectory = Path.Combine(gitDirectory, "src", Constants.Library);
 
         await DeleteAllExceptCsproj(srcDirectory, cancellationToken);
 
