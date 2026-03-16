@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 using Soenneker.Extensions.ValueTask;
 using Soenneker.Utils.Directory.Abstract;
 using Soenneker.Utils.File.Abstract;
-using Soenneker.Utils.File.Download.Abstract;
 using System.Collections.Generic;
+using Soenneker.Cloudflare.Downloader.Abstract;
 
 namespace Soenneker.Nws.Runners.OpenApiClient.Utils;
 
@@ -25,22 +25,20 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
     private readonly IGitUtil _gitUtil;
     private readonly IDotnetUtil _dotnetUtil;
     private readonly IProcessUtil _processUtil;
-
-    private readonly IFileDownloadUtil _fileDownloadUtil;
+    private readonly ICloudflareDownloader _cloudflareDownloader;
     private readonly IFileUtil _fileUtil;
     private readonly IDirectoryUtil _directoryUtil;
 
-    public FileOperationsUtil(ILogger<FileOperationsUtil> logger, IGitUtil gitUtil, IDotnetUtil dotnetUtil, IProcessUtil processUtil,
-        IFileDownloadUtil fileDownloadUtil, IFileUtil fileUtil, IDirectoryUtil directoryUtil)
+    public FileOperationsUtil(ILogger<FileOperationsUtil> logger, IGitUtil gitUtil, IDotnetUtil dotnetUtil, IProcessUtil processUtil, IFileUtil fileUtil,
+        IDirectoryUtil directoryUtil, ICloudflareDownloader cloudflareDownloader)
     {
         _logger = logger;
         _gitUtil = gitUtil;
         _dotnetUtil = dotnetUtil;
         _processUtil = processUtil;
-
-        _fileDownloadUtil = fileDownloadUtil;
         _fileUtil = fileUtil;
         _directoryUtil = directoryUtil;
+        _cloudflareDownloader = cloudflareDownloader;
     }
 
     public async ValueTask Process(CancellationToken cancellationToken = default)
@@ -52,8 +50,7 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
 
         await _fileUtil.DeleteIfExists(targetFilePath, cancellationToken: cancellationToken);
 
-        string? filePath = await _fileDownloadUtil.Download("https://api.weather.gov/openapi.json",
-            targetFilePath, fileExtension: ".json", cancellationToken: cancellationToken);
+        await _cloudflareDownloader.DownloadJsonToPath("https://api.weather.gov/openapi.json", targetFilePath, cancellationToken: cancellationToken);
 
         await _processUtil.Start("dotnet", null, "tool update --global Microsoft.OpenApi.Kiota", waitForExit: true, cancellationToken: cancellationToken);
 

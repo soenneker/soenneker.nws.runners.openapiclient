@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
+using Soenneker.Cloudflare.Downloader.Registrars;
 using Soenneker.Managers.Runners.Registrars;
 using Soenneker.Nws.Runners.OpenApiClient.Utils;
 using Soenneker.Nws.Runners.OpenApiClient.Utils.Abstract;
-using Soenneker.Utils.File.Download.Registrars;
 
 namespace Soenneker.Nws.Runners.OpenApiClient;
 
@@ -22,7 +22,7 @@ public static class Startup
         services.AddHostedService<ConsoleHostedService>()
                 .AddScoped<IFileOperationsUtil, FileOperationsUtil>()
                 .AddRunnersManagerAsScoped()
-                .AddFileDownloadUtilAsScoped();
+                .AddCloudflareDownloaderAsScoped();
 
         return services;
     }
