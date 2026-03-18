@@ -7,6 +7,10 @@
     <File Path=".github/workflows/codeql.yml" />
     <File Path=".github/workflows/daily-automatic-update.yml" />
   </Folder>
-  <Project Path="src/Soenneker.Nws.Runners.OpenApiClient/Soenneker.Nws.Runners.OpenApiClient.csproj" />
-  <Project Path="test/Soenneker.Nws.Runners.OpenApiClient.Tests/Soenneker.Nws.Runners.OpenApiClient.Tests.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/Soenneker.Nws.Runners.OpenApiClient/Soenneker.Nws.Runners.OpenApiClient.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/Soenneker.Nws.Runners.OpenApiClient.Tests/Soenneker.Nws.Runners.OpenApiClient.Tests.csproj" />
+  </Folder>
 </Solution>
