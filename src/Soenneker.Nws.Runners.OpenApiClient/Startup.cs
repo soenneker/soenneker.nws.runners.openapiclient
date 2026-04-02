@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Soenneker.Kiota.Util.Registrars;
 using Soenneker.Cloudflare.Downloader.Registrars;
 using Soenneker.Managers.Runners.Registrars;
 using Soenneker.Nws.Runners.OpenApiClient.Utils;
@@ -22,7 +23,8 @@ public static class Startup
         services.AddHostedService<ConsoleHostedService>()
                 .AddScoped<IFileOperationsUtil, FileOperationsUtil>()
                 .AddRunnersManagerAsScoped()
-                .AddCloudflareDownloaderAsScoped();
+                .AddCloudflareDownloaderAsScoped()
+                .AddKiotaUtilAsScoped();
 
         return services;
     }

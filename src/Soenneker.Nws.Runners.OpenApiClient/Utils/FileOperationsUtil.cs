@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Soenneker.Extensions.ValueTask;
+using Soenneker.Kiota.Util.Abstract;
 using Soenneker.Utils.Directory.Abstract;
 using Soenneker.Utils.File.Abstract;
 using System.Collections.Generic;
@@ -25,17 +26,19 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
     private readonly IGitUtil _gitUtil;
     private readonly IDotnetUtil _dotnetUtil;
     private readonly IProcessUtil _processUtil;
+    private readonly IKiotaUtil _kiotaUtil;
     private readonly ICloudflareDownloader _cloudflareDownloader;
     private readonly IFileUtil _fileUtil;
     private readonly IDirectoryUtil _directoryUtil;
 
     public FileOperationsUtil(ILogger<FileOperationsUtil> logger, IGitUtil gitUtil, IDotnetUtil dotnetUtil, IProcessUtil processUtil, IFileUtil fileUtil,
-        IDirectoryUtil directoryUtil, ICloudflareDownloader cloudflareDownloader)
+        IDirectoryUtil directoryUtil, ICloudflareDownloader cloudflareDownloader, IKiotaUtil kiotaUtil)
     {
         _logger = logger;
         _gitUtil = gitUtil;
         _dotnetUtil = dotnetUtil;
         _processUtil = processUtil;
+        _kiotaUtil = kiotaUtil;
         _fileUtil = fileUtil;
         _directoryUtil = directoryUtil;
         _cloudflareDownloader = cloudflareDownloader;
@@ -52,15 +55,13 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
 
         await _cloudflareDownloader.DownloadJsonToPath("https://api.weather.gov/openapi.json", targetFilePath, cancellationToken: cancellationToken);
 
-        await _processUtil.Start("dotnet", null, "tool update --global Microsoft.OpenApi.Kiota", waitForExit: true, cancellationToken: cancellationToken);
+        await _kiotaUtil.EnsureInstalled(cancellationToken);
 
         string srcDirectory = Path.Combine(gitDirectory, "src", Constants.Library);
 
         await DeleteAllExceptCsproj(srcDirectory, cancellationToken);
 
-        await _processUtil.Start("kiota", gitDirectory, $"kiota generate -l CSharp -d \"{targetFilePath}\" -o src/{Constants.Library} -c NwsOpenApiClient -n {Constants.Library}",
-                              waitForExit: true, cancellationToken: cancellationToken)
-                          .NoSync();
+        await _kiotaUtil.Generate(targetFilePath, "NwsOpenApiClient", Constants.Library, gitDirectory, cancellationToken).NoSync();
 
         await BuildAndPush(gitDirectory, cancellationToken)
             .NoSync();
