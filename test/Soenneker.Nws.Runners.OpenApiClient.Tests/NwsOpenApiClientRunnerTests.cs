@@ -1,17 +1,16 @@
-using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.Nws.Runners.OpenApiClient.Tests;
 
-[Collection("Collection")]
-public sealed class NwsOpenApiClientRunnerTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public sealed class NwsOpenApiClientRunnerTests : HostedUnitTest
 {
-    public NwsOpenApiClientRunnerTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public NwsOpenApiClientRunnerTests(Host host) : base(host)
     {
 
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
