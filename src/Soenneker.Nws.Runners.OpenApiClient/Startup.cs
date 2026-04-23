@@ -21,10 +21,10 @@ public static class Startup
     public static IServiceCollection SetupIoC(this IServiceCollection services)
     {
         services.AddHostedService<ConsoleHostedService>()
-                .AddScoped<IFileOperationsUtil, FileOperationsUtil>()
-                .AddRunnersManagerAsScoped()
-                .AddCloudflareDownloaderAsScoped()
-                .AddKiotaUtilAsScoped();
+                .AddSingleton<IFileOperationsUtil, FileOperationsUtil>()
+                .AddRunnersManagerAsSingleton()
+                .AddCloudflareDownloaderAsSingleton()
+                .AddKiotaUtilAsSingleton();
 
         return services;
     }
